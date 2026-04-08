@@ -6,6 +6,7 @@ mod args;
 mod auth;
 #[allow(dead_code)]
 mod config;
+mod datasets;
 mod env;
 #[cfg(unix)]
 mod eval;
@@ -62,6 +63,7 @@ Core
 Projects & resources
   projects     Manage projects
   topics       Inspect and control Topics automation
+  datasets     Manage datasets
   prompts      Manage prompts
   functions    Manage functions (tools, scorers, and more)
   tools        Manage tools
@@ -135,6 +137,8 @@ enum Commands {
     Projects(CLIArgs<projects::ProjectsArgs>),
     /// Inspect and control Topics automation
     Topics(CLIArgs<topics::TopicsArgs>),
+    /// Manage datasets
+    Datasets(CLIArgs<datasets::DatasetsArgs>),
     /// Manage prompts
     Prompts(CLIArgs<prompts::PromptsArgs>),
     #[command(name = "self")]
@@ -173,6 +177,7 @@ impl Commands {
             Commands::Eval(cmd) => &cmd.base,
             Commands::Projects(cmd) => &cmd.base,
             Commands::Topics(cmd) => &cmd.base,
+            Commands::Datasets(cmd) => &cmd.base,
             Commands::Prompts(cmd) => &cmd.base,
             Commands::SelfCommand(cmd) => &cmd.base,
             Commands::Tools(cmd) => &cmd.base,
@@ -197,6 +202,7 @@ impl Commands {
             #[cfg(unix)]
             Commands::Eval(cmd) => &mut cmd.base,
             Commands::Projects(cmd) => &mut cmd.base,
+            Commands::Datasets(cmd) => &mut cmd.base,
             Commands::Topics(cmd) => &mut cmd.base,
             Commands::Prompts(cmd) => &mut cmd.base,
             Commands::SelfCommand(cmd) => &mut cmd.base,
@@ -260,6 +266,7 @@ async fn try_main() -> Result<()> {
         #[cfg(unix)]
         Commands::Eval(cmd) => eval::run(cmd.base, cmd.args).await?,
         Commands::Projects(cmd) => projects::run(cmd.base, cmd.args).await?,
+        Commands::Datasets(cmd) => datasets::run(cmd.base, cmd.args).await?,
         Commands::Topics(cmd) => topics::run(cmd.base, cmd.args).await?,
         Commands::Prompts(cmd) => prompts::run(cmd.base, cmd.args).await?,
         Commands::Tools(cmd) => tools::run(cmd.base, cmd.args).await?,
